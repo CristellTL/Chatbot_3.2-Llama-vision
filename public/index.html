@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Multimodal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="App">
+    <h1>Chatbot Multimodal</h1>
+    <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div id="imagePreviewContainer" style="display: none;">
+      <img id="imagePreview" alt="Vista previa" />
+    </div>
+    <button id="sendButton">Enviar</button>
+    <div class="response">
+      <h2>Respuesta:</h2>
+      <p id="responseText"></p>
+    </div>
+  </div>
+
+  <script>
+    const messageInput = document.getElementById('message');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const sendButton = document.getElementById('sendButton');
+    const responseText = document.getElementById('responseText');
+
+    let selectedImage = null;
+
+    // Manejar la selección de la imagen y generar la vista previa
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        selectedImage = file;
+        imagePreview.src = URL.createObjectURL(file);
+        imagePreviewContainer.style.display = 'block';
+      } else {
+        selectedImage = null;
+        imagePreview.src = '';
+        imagePreviewContainer.style.display = 'none';
+      }
+    });
+
+    sendButton.addEventListener('click', async () => {
+      const message = messageInput.value.trim();
+
+      if (!message) {
+        responseText.textContent = 'Por favor, escribe un mensaje.';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('message', message);
+
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+
+      responseText.textContent = 'Enviando...';
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error en el servidor: ${response.status}`);
+        }
+
+        ///////////////////////////////////////////////////
+        const rawText = await response.text();
+
+        // Dividir la respuesta en fragmentos
+        const fragments = rawText.split('\n');
+
+        // Parsear cada fragmento como JSON
+        const parsedFragments = fragments.map(fragment => {
+        try {
+            return JSON.parse(fragment);
+        } catch (e) {
+            return null; 
+        }
+        });
+
+        // Filtrar los fragmentos que contienen contenido de tipo "message"
+        const lines = parsedFragments[0].split('\n');
+        lines.pop()
+
+        // Paso 2: Filtrar solo los mensajes que contienen contenido y concatenarlo
+        let fullMessage = lines
+        .map(line => {
+            // Parsear cada línea a objeto
+            const obj = JSON.parse(line);
+            // Retornar el contenido del mensaje si existe
+            return obj.message ? obj.message.content : '';
+        })
+        .join(''); // Concatenar todo el contenido en una sola cadena
+
+        // Mostrar el mensaje completo
+        console.log(fullMessage);
+
+        //setResponse(fullMessage || 'No se pudo procesar la respuesta del servidor.');
+        //const result = await response.json();
+        responseText.textContent = fullMessage || 'No se pudo procesar la respuesta del servidor.';
+
+      } catch (error) {
+        console.error('Error:', error);
+        responseText.textContent = 'Error al procesar la consulta.';
+      }
+    });
+  </script>
+</body>
+</html>

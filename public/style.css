@@ -1,0 +1,126 @@
+/* General */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Evitar scroll de la página principal */
+  }
+  
+  .App {
+    max-width: 600px;
+    width: 90%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto; /* Permitir scroll si el contenido excede */
+    max-height: 90vh; /* Limitar la altura total de la aplicación */
+  }
+  
+  h1 {
+    text-align: center;
+    color: #4a90e2;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    resize: none;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90e2;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #357abd;
+  }
+  
+  /* Estilo para la vista previa de imágenes */
+  #imagePreviewContainer {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  #imagePreview {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 500px; /* Máximo alto de la imagen */
+    width: auto; /* Mantener la proporción */
+    height: auto; /* Mantener la proporción */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Estilo para la respuesta */
+  .response {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px;
+    box-sizing: border-box;
+    max-height: 200px; /* Limitar la altura de la caja de respuesta */
+    overflow-y: auto; /* Habilitar scroll vertical */
+  }
+  
+  .response h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #4a90e2;
+  }
+  
+  .response p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  @media (max-width: 480px) {
+    h1 {
+        font-size: 20px;
+    }
+  
+    textarea {
+        height: 80px;
+    }
+  
+    button {
+        font-size: 14px;
+    }
+  
+    .response h2 {
+        font-size: 16px;
+    }
+  }
+  
