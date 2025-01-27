@@ -3,28 +3,24 @@ const cors = require('cors');
 const axios = require('axios');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
 
 const app = express();
 const PORT = 3000;
+const OLLAMA_URL = 'http://127.0.0.1:11434/api/chat';
+const CONDA_ENV = 'whisper_env';  // Nombre de tu entorno virtual de Conda
 
-// Configurar CORS para permitir solicitudes desde cualquier origen
 app.use(cors());
-
-// Middleware para manejar JSON y datos de formularios
 app.use(express.json());
 
-// Configuración de multer para manejar archivos (imágenes)
-const upload = multer();
-
-// Servir archivos estáticos del frontend
+const upload = multer({ storage: multer.memoryStorage() });
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ruta principal (opcional)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Ruta para manejar solicitudes a /api/chat
 app.post('/api/chat', upload.single('image'), async (req, res) => {
     const { message } = req.body;
     const imageFile = req.file;
@@ -34,24 +30,20 @@ app.post('/api/chat', upload.single('image'), async (req, res) => {
     }
 
     try {
-        // Construir la solicitud para Ollama
         const payload = {
             model: 'llama3.2-vision',
             messages: [{ role: 'user', content: message }],
         };
 
         if (imageFile) {
-            // Convertir la imagen a base64 y agregarla al payload
             const imageBase64 = imageFile.buffer.toString('base64');
             payload.messages[0].images = [imageBase64];
         }
 
-        // Enviar la solicitud a Ollama
-        const response = await axios.post('http://127.0.0.1:11434/api/chat', payload, {
+        const response = await axios.post(OLLAMA_URL, payload, {
             headers: { 'Content-Type': 'application/json' },
         });
 
-        // Devolver la respuesta de Ollama al cliente
         res.json(response.data);
     } catch (error) {
         console.error('Error al consultar Ollama:', error.message);
@@ -59,12 +51,33 @@ app.post('/api/chat', upload.single('image'), async (req, res) => {
     }
 });
 
-// Ruta para manejar cualquier otra solicitud no definida
+app.post('/api/transcribe', upload.single('audio'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No se recibió ningún archivo de audio.' });
+    }
+
+    const audioPath = path.join(__dirname, 'temp_audio.wav');
+    fs.writeFileSync(audioPath, req.file.buffer);
+
+    const command = `conda run -n ${CONDA_ENV} python transcribe.py "${audioPath}"`;
+
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error('Error ejecutando Whisper:', stderr);
+            return res.status(500).json({ error: 'Error al procesar la transcripción de audio.' });
+        }
+
+        const transcription = stdout.trim();
+        fs.unlinkSync(audioPath);
+
+        res.json({ transcription });
+    });
+});
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Iniciar el servidor
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en http://0.0.0.0:${PORT}`);
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

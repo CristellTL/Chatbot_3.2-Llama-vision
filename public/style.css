@@ -64,6 +64,30 @@ body {
     background-color: #357abd;
   }
   
+  .audioControls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  #sendButton {
+    background-color: #800080;  /* Morado */
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 60%;  /* Reducir el ancho al 60% */
+    margin: 10px auto 0 auto;  /* Centrar el botón horizontalmente */
+    display: block;  /* Asegurar que se comporte como un bloque para centrar */
+    transition: background-color 0.3s ease;
+  }
+
+  #sendButton:hover {
+      background-color: #5a005a;
+  }
+
   /* Estilo para la vista previa de imágenes */
   #imagePreviewContainer {
     margin-top: 20px;

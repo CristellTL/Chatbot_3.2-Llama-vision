@@ -9,12 +9,22 @@
 <body>
   <div class="App">
     <h1>Chatbot Multimodal</h1>
+    
     <textarea id="message" placeholder="Escribe tu mensaje..."></textarea>
+    
     <input type="file" id="imageInput" accept="image/*" />
     <div id="imagePreviewContainer" style="display: none;">
       <img id="imagePreview" alt="Vista previa" />
     </div>
-    <button id="sendButton">Enviar</button>
+
+    <div class="audioControls">
+      <button id="startRecord">🎙 Iniciar Grabación</button>
+      <button id="stopRecord" disabled>🛑 Detener Grabación</button>
+      <audio id="audioPlayback" controls style="display: none;"></audio>
+    </div>
+
+    <button id="sendButton">📤 Enviar</button>
+
     <div class="response">
       <h2>Respuesta:</h2>
       <p id="responseText"></p>
@@ -28,10 +38,14 @@
     const imagePreview = document.getElementById('imagePreview');
     const sendButton = document.getElementById('sendButton');
     const responseText = document.getElementById('responseText');
+    const startRecordButton = document.getElementById('startRecord');
+    const stopRecordButton = document.getElementById('stopRecord');
+    const audioPlayback = document.getElementById('audioPlayback');
 
     let selectedImage = null;
+    let mediaRecorder;
+    let audioChunks = [];
 
-    // Manejar la selección de la imagen y generar la vista previa
     imageInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
@@ -40,7 +54,6 @@
         imagePreviewContainer.style.display = 'block';
       } else {
         selectedImage = null;
-        imagePreview.src = '';
         imagePreviewContainer.style.display = 'none';
       }
     });
@@ -72,7 +85,9 @@
           throw new Error(`Error en el servidor: ${response.status}`);
         }
 
-        ///////////////////////////////////////////////////
+        //const result = await response.json();
+        //responseText.textContent = result.message || 'No se pudo procesar la respuesta del servidor.';
+
         const rawText = await response.text();
 
         // Dividir la respuesta en fragmentos
@@ -104,14 +119,61 @@
         // Mostrar el mensaje completo
         console.log(fullMessage);
 
-        //setResponse(fullMessage || 'No se pudo procesar la respuesta del servidor.');
-        //const result = await response.json();
         responseText.textContent = fullMessage || 'No se pudo procesar la respuesta del servidor.';
-
       } catch (error) {
         console.error('Error:', error);
         responseText.textContent = 'Error al procesar la consulta.';
       }
+    });
+
+    startRecordButton.addEventListener('click', async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.start();
+
+      audioChunks = [];
+      mediaRecorder.ondataavailable = event => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const formData = new FormData();
+        formData.append('audio', audioBlob);
+
+        audioPlayback.src = URL.createObjectURL(audioBlob);
+        audioPlayback.style.display = 'block';
+
+        responseText.textContent = 'Procesando transcripción...';
+
+        try {
+          const response = await fetch('/api/transcribe', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          messageInput.value = result.transcription;
+          responseText.textContent = 'Transcripción completada. Puedes enviarla.';
+        } catch (error) {
+          console.error('Error:', error);
+          responseText.textContent = 'Error al procesar el audio.';
+        }
+      };
+
+      startRecordButton.disabled = true;
+      stopRecordButton.disabled = false;
+    });
+
+    stopRecordButton.addEventListener('click', () => {
+      mediaRecorder.stop();
+      startRecordButton.disabled = false;
+      stopRecordButton.disabled = true;
     });
   </script>
 </body>
