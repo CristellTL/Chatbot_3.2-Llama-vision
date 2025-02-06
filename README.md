@@ -1,8 +1,8 @@
-## Proyecto: Implementación de un Chatbot Multimodal con Modelos de Lenguaje Avanzados y Transcripción de Audio: Uso de Llama 3.2-Vision y Whisper.
+## IMPLEMENTACIÓN DE UN CHATBOT MULTIMODAL CON MODELOS DE LENGUAJE AVANZADOS Y TRANSCRIPCIÓN DE AUDIO: USO DE LLAMA 3.2-VISION Y WHISPER
 
 ## Introducción.
 
-En este documento se presenta la implementación de un chatbot multimodal que combina capacidades de procesamiento de lenguaje natural (NLP) y visión por computadora, utilizando el modelo Llama 3.2-Vision-Instruct-11B desarrollado por Meta. Además, se integra el modelo Whisper de OpenAI para la transcripción de audio a texto, permitiendo una interacción más completa y versátil con el usuario. El sistema se desarrolla en un entorno Node.js, donde se gestionan las solicitudes HTTP, se procesan imágenes y audio, y se comunican con modelos de inteligencia artificial locales a través de la API de Ollama. El documento detalla el flujo de trabajo, la configuración del servidor, la transcripción de audio mediante Python, y la técnica de fine-tuning con QLoRA para optimizar el rendimiento de los modelos de lenguaje. Este proyecto demuestra cómo las tecnologías de IA avanzadas pueden integrarse en aplicaciones web interactivas, ofreciendo soluciones innovadoras para la interpretación de texto, imágenes y audio.
+En este documento se presenta la implementación de un chatbot multimodal que combina capacidades de procesamiento de lenguaje natural (NLP) y visión por computadora, utilizando el modelo Llama 3.2-Vision-Instruct-11B desarrollado por Meta. Además, se integra el modelo Whisper-base de OpenAI para la transcripción de audio a texto, permitiendo una interacción más completa y versátil con el usuario. El sistema se desarrolla en un entorno Node.js, donde se gestionan las solicitudes HTTP, se procesan imágenes y audio, y se comunican con modelos de inteligencia artificial locales a través de la API de Ollama. El documento detalla el flujo de trabajo, la configuración del servidor, la transcripción de audio mediante Python, y la técnica de fine-tuning con QLoRA para optimizar el rendimiento de los modelos de lenguaje. Este proyecto demuestra cómo las tecnologías de IA avanzadas pueden integrarse en aplicaciones web interactivas, ofreciendo soluciones innovadoras para la interpretación de texto, imágenes y audio.
 
 ## Diagrama de flujo de los procesos internos del Chatbot.
 
@@ -12,7 +12,7 @@ En el presente proyecto se utiliza un Modelo de Lenguaje para responder en base 
 
 ## Descripción de los modelos utilizados:
 
-###
+### [Llama 3.2-Vision-Instruct-11B.] (https://ollama.com/library/llama3.2-vision:11b)
 
 **_Descripción:_** Llama (Large Language Model Meta AI) es una serie de modelos de lenguaje desarrollados por Meta (anteriormente conocida como Facebook). El modelo Llama 3.2-Vision-Instruct-11B es una versión avanzada que combina capacidades de lenguaje con visión artificial. "3.2" hace referencia a la versión del modelo, "Vision" indica que el modelo tiene capacidades de procesamiento visual, y "Instruct" sugiere que está optimizado para realizar tareas bajo instrucciones.
 
