@@ -307,6 +307,21 @@ Finalmente, el resultado de la transcripción, que es un diccionario, se imprime
 
 El fine-tuning es el proceso de ajustar modelos preentrenados para tareas específicas. Gracias a Q LoRA, este proceso es más accesible y eficiente, ya que se reduce la necesidad de hardware costoso y se optimizan los tiempos de entrenamiento sin comprometer el rendimiento del modelo.
 
+### Sobre el uso de QLoRA para LLM
+
+QLoRA es una técnica revolucionaria que permite ajustar eficientemente modelos de lenguaje grandes (LLM) utilizando menos recursos computacionales y optimizando el tiempo de entrenamiento. Su enfoque combina estrategias como la cuantización a 4 bits y el ajuste fino eficiente de parámetros (LoRA), lo que la convierte en una herramienta ideal para trabajar con modelos de gran tamaño, incluso en hardware limitado.
+
+### Beneficios clave
+
+- **Reducción de costos computacionales**: Al utilizar cuantización a 4 bits, QLoRA minimiza el uso de memoria sin sacrificar la precisión del modelo.
+- **Ajuste fino eficiente**: LoRA permite modificar únicamente un subconjunto de parámetros del modelo, lo que acelera el proceso de entrenamiento y reduce la necesidad de grandes recursos.
+- **Escalabilidad**: Es posible aplicar QLoRA a modelos desde millones hasta miles de millones de parámetros, haciendo viable el uso de LLM en más aplicaciones.
+- **Flexibilidad**: Compatible con múltiples frameworks y adaptable a diversas tareas, desde generación de texto hasta comprensión del lenguaje.
+
+### Limitaciones
+
+- Aunque QLoRA es eficiente, el uso de hardware adecuado (como GPUs modernas) sigue siendo clave para aprovechar al máximo sus beneficios.
+- La implementación puede requerir ajustes técnicos específicos para ciertas arquitecturas de modelos o tipos de datos.
 ---
 
 ### Instalación de librerías necesarias
