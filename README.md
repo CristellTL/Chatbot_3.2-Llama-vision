@@ -12,7 +12,7 @@ En el presente proyecto se utiliza un Modelo de Lenguaje para responder en base 
 
 ## Descripción de los modelos utilizados:
 
-### [Llama 3.2-Vision-Instruct-11B.] (https://ollama.com/library/llama3.2-vision:11b)
+### [Llama 3.2-Vision-Instruct-11B.](https://ollama.com/library/llama3.2-vision:11b)
 
 **_Descripción:_** Llama (Large Language Model Meta AI) es una serie de modelos de lenguaje desarrollados por Meta (anteriormente conocida como Facebook). El modelo Llama 3.2-Vision-Instruct-11B es una versión avanzada que combina capacidades de lenguaje con visión artificial. "3.2" hace referencia a la versión del modelo, "Vision" indica que el modelo tiene capacidades de procesamiento visual, y "Instruct" sugiere que está optimizado para realizar tareas bajo instrucciones.
 
