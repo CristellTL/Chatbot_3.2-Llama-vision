@@ -20,6 +20,206 @@ En el presente proyecto se utiliza un Modelo de Lenguaje para responder en base 
 
 **_Uso:_** Se utiliza principalmente en aplicaciones de reconocimiento de voz, como la transcripción automática de reuniones, subtitulado de videos, asistencia por voz, traducción de audio a texto y muchas otras aplicaciones que requieren convertir audio en texto escrito. Además, Whisper es bastante robusto y puede entender diferentes acentos y sonidos, lo que lo hace muy útil en contextos multilingües y diversos.
 
+## Descripción del código del servidor.
+
+El código define un servidor web construido con Node.js y Express.js que proporciona dos funcionalidades principales:
+
+- Un sistema de chat con capacidades de análisis de imágenes.
+
+- Un servicio de transcripción de audio utilizando un modelo de IA (probablemente Whisper).
+
+Este servidor se comunica con un API local llamado Ollama y ejecuta scripts de Python en un entorno Conda para la transcripción de audio.
+
+### 1. Dependencias y Configuración Inicial
+
+```javascript
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { exec } = require("child_process");
+```
+
+- **_express:_** Framework web para manejar rutas y peticiones HTTP.
+
+- **_cors:_** Permite la comunicación entre diferentes orígenes (Cross-Origin Resource Sharing).
+
+- **_axios:_** Cliente HTTP para hacer solicitudes a APIs externas.
+
+- **_multer:_** Middleware para manejar archivos en peticiones multipart/form-data.
+
+- **_path y fs:_** Módulos para manejo de rutas de archivos y operaciones en el sistema de archivos.
+
+- **_child_process (exec):_** Ejecuta comandos del sistema, en este caso para correr scripts de Python.
+
+Configuración básica del servidor:
+
+```javascript
+const app = express();
+const PORT = 3000;
+const OLLAMA_URL = "http://127.0.0.1:11434/api/chat";
+const CONDA_ENV = "whisper_env";
+```
+
+### 2. Middleware y Configuración de Rutas.
+
+```javascript
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
+```
+
+- **_CORS_** habilitado para permitir peticiones de diferentes dominios.
+
+- **_express.json()_** para parsear cuerpos JSON en solicitudes HTTP.
+
+- **_Archivos estáticos_** servidos desde la carpeta public (HTML, CSS, JS).
+
+### 3. Ruta Principal (/).
+
+```javascript
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+```
+
+- **_Funcionalidad:_** Sirve el archivo index.html ubicado en la carpeta public.
+
+- **_Propósito:_** Proporciona una interfaz de usuario básica para interactuar con el servidor.
+
+### 4. API de Chat con Soporte de Imágenes (/api/chat).
+
+```javascript
+app.post("/api/chat", upload.single("image"), async (req, res) => {
+  const { message } = req.body;
+  const imageFile = req.file;
+
+  if (!message) {
+    return res
+      .status(400)
+      .json({ error: 'El campo "message" es obligatorio.' });
+  }
+
+  try {
+    const payload = {
+      model: "llama3.2-vision",
+      messages: [{ role: "user", content: message }],
+    };
+
+    if (imageFile) {
+      const imageBase64 = imageFile.buffer.toString("base64");
+      payload.messages[0].images = [imageBase64];
+    }
+
+    const response = await axios.post(OLLAMA_URL, payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error al consultar Ollama:", error.message);
+    res
+      .status(500)
+      .json({ error: "Error al procesar la consulta con Ollama." });
+  }
+});
+```
+
+**_Flujo de Funcionamiento:_**
+
+- **_Recepción de Datos:_** Acepta mensajes de texto y opcionalmente una imagen.
+
+- **_Validación:_** Verifica que el campo message esté presente.
+
+- **_Procesamiento de Imágenes:_** Si hay una imagen, se convierte a Base64.
+
+- **_Comunicación con Ollama:_** Envía los datos a la API de Ollama para obtener una respuesta.
+
+- **_Respuesta:_** Devuelve la respuesta del modelo de IA al cliente.
+
+**_Errores Comunes:_**
+
+- Falta del campo message (error 400).
+
+- Problemas al conectar con Ollama (error 500).
+
+### 5. API de Transcripción de Audio (/api/transcribe).
+
+```javascript
+app.post("/api/transcribe", upload.single("audio"), (req, res) => {
+  if (!req.file) {
+    return res
+      .status(400)
+      .json({ error: "No se recibió ningún archivo de audio." });
+  }
+
+  const audioPath = path.join(__dirname, "temp_audio.wav");
+  fs.writeFileSync(audioPath, req.file.buffer);
+
+  const command = `conda run -n ${CONDA_ENV} python transcribe.py "${audioPath}"`;
+
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Error ejecutando Whisper:", stderr);
+      return res
+        .status(500)
+        .json({ error: "Error al procesar la transcripción de audio." });
+    }
+
+    const transcription = stdout.trim();
+    fs.unlinkSync(audioPath);
+
+    res.json({ transcription });
+  });
+});
+```
+
+**_Flujo de Funcionamiento:_**
+
+- **_Recepción del Archivo:_** Acepta un archivo de audio.
+
+- **_Almacenamiento Temporal:_** Guarda el archivo temporalmente en el servidor.
+
+- **_Ejecución de Script de Python:_** Utiliza exec para ejecutar transcribe.py en un entorno Conda.
+
+**_Respuesta:_** Devuelve la transcripción al cliente.
+
+- **_Limpieza:_** Elimina el archivo de audio después de la transcripción.
+
+**_Posibles Errores:_**
+
+- No se recibe archivo de audio (error 400).
+
+- Fallo en la ejecución del script de Python (error 500).
+
+### 6. Ruta Catch-All (\*).
+
+```javascript
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+```
+
+**_Funcionalidad:_** Redirige cualquier ruta no definida a index.html.
+
+**_Propósito:_** Soporte para aplicaciones SPA (Single Page Applications).
+
+### 7. Inicialización del Servidor.
+
+```javascript
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+});
+```
+
+- El servidor escucha en el puerto 3000.
+
+- Muestra un mensaje de confirmación en la consola.
+
+Este servidor Node.js está diseñado para integrar capacidades de IA, permitiendo tanto interacciones basadas en texto e imágenes (mediante Ollama) como la transcripción de audio (usando Whisper). Su estructura modular y uso de tecnologías modernas lo hace adecuado para aplicaciones web interactivas y dinámicas.
+
 ## Descripción de la transcripción de audio a texto.
 
 Para la transcripción del audio a texto, se escribio un programa en python llamado transcribe.py. Este script toma un archivo de audio como entrada desde la línea de comandos, lo transcribe a texto utilizando el modelo de Whisper, y luego imprime el texto transcrito.
@@ -129,8 +329,6 @@ En las imagenes de las figuras 14 y 15 se observa el código de como se pueden i
 ![](https://drive.google.com/file/d/12LpmnHgqxMLJTUEUC88wi_80-khfvDz-/view?usp=drive_link)
 
 ![](https://drive.google.com/file/d/1hKt5qgsj_S5Dd9e59-BWPhSsQL85BEd1/view?usp=drive_link)
-
-
 
 ## Código para reentrenar el modelo con Q LoRA
 
@@ -245,12 +443,12 @@ device_map = {"": 0}
 
 
 ```
+
 # Configuración Inicial
 
 En este apartado del código se presenta, la carga de los datos, la configuración inicial, el modelo pre-entrenado, el tokenizer, la configuración para LoRA y finalmente el entrenamiento del modelo
 
 # Código para cargar la base de datos y configurar el modelo con Q LoRA
-
 
 ```python
 # Cargar base de datos
@@ -338,7 +536,6 @@ trainer.train()
 Una vez realizado el código anterior, la imagén que se muestra a continuación, permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida.
 
 ![](https://drive.google.com/file/d/14INN3qOOx2THcX9S0Egwmolc4EsjgL6S/view?usp=drive_link)
-
 
 ## Pasos para la ejecución del entorno.
 
@@ -483,8 +680,7 @@ En este caso el audio grabado es "explica que es un LLM". Posteriormente en env�
 
 <p align="center">Figura 13. Transcribir audio a texto</p>
 
-
-# Conclusiónes 
+# Conclusiónes
 
 ## Sobre el uso de QLoRA para LLM
 
