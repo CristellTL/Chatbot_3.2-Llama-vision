@@ -1,4 +1,4 @@
-# Proyecto: Implementación de un Chatbot Multimodal con Modelos de Lenguaje Avanzados y Transcripción de Audio: Uso de Llama 3.2-Vision y Whisper.
+## Proyecto: Implementación de un Chatbot Multimodal con Modelos de Lenguaje Avanzados y Transcripción de Audio: Uso de Llama 3.2-Vision y Whisper.
 
 ## Introducción.
 
