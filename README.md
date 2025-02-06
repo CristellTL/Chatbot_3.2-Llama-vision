@@ -740,7 +740,6 @@ En este caso el audio grabado es "explica que es un LLM". Posteriormente en env√
 
 <p align="center">Figura 13. Transcribir audio a texto</p>
 
-# Conclusi√≥nes
 
 ## Sobre el uso de QLoRA para LLM
 
