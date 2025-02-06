@@ -390,11 +390,15 @@ packing = False
 ## Cargar modelo en GPU
 device_map = {"": 0}
 
-#Configuración Inicial
+
+
+```
+# Configuración Inicial
 
 En este apartado del código se presenta, la carga de los datos, la configuración inicial, el modelo pre-entrenado, el tokenizer, la configuración para LoRA y finalmente el entrenamiento del modelo
 
 # Código para cargar la base de datos y configurar el modelo con Q LoRA
+
 
 ```python
 # Cargar base de datos
@@ -477,9 +481,24 @@ trainer = SFTTrainer(
 # Reentrenar modelo
 trainer.train()
 
-# Guardar modelo
-trainer.model.save_pretrained(new_model)
+```
 
-Una vez realizado el código anterior, la imagén de la figura 15 que se muestra a continuación, permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida.
+Una vez realizado el código anterior, la imagén que se muestra a continuación, permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida.
 
 ![](https://drive.google.com/file/d/14INN3qOOx2THcX9S0Egwmolc4EsjgL6S/view?usp=drive_link)
+
+# Conclusión sobre el uso de QLoRA para LLM
+
+QLoRA es una técnica revolucionaria que permite ajustar eficientemente modelos de lenguaje grandes (LLM) utilizando menos recursos computacionales y optimizando el tiempo de entrenamiento. Su enfoque combina estrategias como la cuantización a 4 bits y el ajuste fino eficiente de parámetros (LoRA), lo que la convierte en una herramienta ideal para trabajar con modelos de gran tamaño, incluso en hardware limitado.
+
+## Beneficios clave
+
+- **Reducción de costos computacionales**: Al utilizar cuantización a 4 bits, QLoRA minimiza el uso de memoria sin sacrificar la precisión del modelo.
+- **Ajuste fino eficiente**: LoRA permite modificar únicamente un subconjunto de parámetros del modelo, lo que acelera el proceso de entrenamiento y reduce la necesidad de grandes recursos.
+- **Escalabilidad**: Es posible aplicar QLoRA a modelos desde millones hasta miles de millones de parámetros, haciendo viable el uso de LLM en más aplicaciones.
+- **Flexibilidad**: Compatible con múltiples frameworks y adaptable a diversas tareas, desde generación de texto hasta comprensión del lenguaje.
+
+## Limitaciones
+
+- Aunque QLoRA es eficiente, el uso de hardware adecuado (como GPUs modernas) sigue siendo clave para aprovechar al máximo sus beneficios.
+- La implementación puede requerir ajustes técnicos específicos para ciertas arquitecturas de modelos o tipos de datos.
