@@ -87,154 +87,6 @@ Finalmente, el resultado de la transcripción, que es un diccionario, se imprime
 
 ## Fine-Tunning.
 
-## Pasos para la ejecución del entorno.
-
-En la realización del presente proyecto se utilizó el sistema operativo ubuntu 20.04.6 LTS. El servidor con el sistema operativo se encuentra en el laboratorio de postgrado. A continuación se muestran los pasos para la ejecución del entorno.
-
-### 1. Conexión mediante ssh al servidor con sistema operativo ubuntu.
-
-En la figura 1 se puede observar los comandos utilizados para iniciar sesión en el sistema operativo.
-
-![Conexión SSH](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/1.%20conexionSSH.png)
-
-<p align="center">Figura 1. Iniciar sesión mediante ssh.</p>
-
-### 2. Iniciar ejecución del servidor ollama.
-
-En la figura 2 se observa el comando para iniciar el servidor ollama.
-
-![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/2.ejecucionOllama.png)
-
-<p align="center">Figura 2. Ejecutar servidor ollama.</p>
-
-### 3. Mostrar la lista de entornos virtuales disponibles.
-
-En la figura 3 se muestra el comando para mostrar los entornos virtuales disponibles.
-
-![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/3.%20ListaEntornosEjecutables.png)
-
-<p align="center">Figura 3. Entorno disponibles</p>
-
-### 4. Ejecución del entorno virtual.
-
-En la figura 4, se observa el comando utilizado para ejecutar el entorno virtual llamado **_whisper_env_**.
-
-![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/4.%20ActivacionEntorno.png)
-
-<p align="center">Figura 4. Ejecucion del entorno virtual</p>
-
-### 5. Ejecución del servidor escrito en nodejs.
-
-En la figura 5, se realizan las siguiente acciones.
-
-- Ingresar a la carpeta Chatbot_3.2-Llama-vision.
-- Ejecutar el servidor escrito en nodejs.
-
-![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/6.EjecucionServidorNode.png)
-
-<p align="center">Figura 5. Ejecucion del servidor servidor escrito en nodejs.
-
-Después de realizar los pasos anteriores, el siguiente paso es mostrar la interfaz web desde un navegador para comunicarse con el modelo de lenguaje multimodal llama 3.2.
-
-## Pruebas realizadas.
-
-A continuación se muestran los pasos a seguir para ejecutar el chatbot multimodal.
-
-### 1. Cargar la interfaz web en un navegador.
-
-Cabe comentar que para la realización del proyecto se utilizó un servidor del laboratorio de postgrado, por dicha razón se escribe en el navegador la dirección ip del servidor.
-
-`http://192.168.241.18:3000/`
-
-Nota: En el código del servidor escrito en nodejs, se indica que va a estar escuchando las peticiones web en el puerto 3000.
-
-En la figura 6, se observa la interfaz del chatbot multimodal corriendo en el servidor del laboratorio de postgrado.
-
-![Interfaz Web](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/7.%20InterfazWeb.png)
-
-<p align="center">Figura 6. Interfaz web del chatbot multimodal</p>
-
-### 2. Cargar imagen.
-
-En la figura 7 se muestra el proceso para cargar una imagen. Dicha imagen será enviada al llama3.2.
-![Selección de Imagen](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/8.seleccionImagen.png)
-
-<p align="center">Figura 7. Cargar imagen</p>
-
-En la figura 8 se muestra el resultado de cargar la imagen.
-![Buscar Imagen](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/9.BuscarImagen.png)
-
-<p align="center">Figura 8. Imagen cargada</p>
-
-### 3. Crear prompt con texto e imagen.
-
-En la figura 9 se muestra de qué manera se puede crear un prompt con texto e imagen. En este caso el prompt consiste en pedirle a llama3.2 que describa el contenido de la imagen.
-
-![Prompt de Texto 1](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/10.PronptTexto1.png)
-
-<p align="center">Figura 9. Preparar prompt con texto e imagen</p>
-
-En la figura 10 se observa la respuesta del modelo del lenguaje. Cabe comentar que el prompt consistió en enviar texto e imagen. Posteriormente el modelo contesta solamente texto.
-
-![Descripción Prompt 1 - Parte 2](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/12.descripcionProm1_p2.png)
-
-<p align="center">Figura 10. Respuesta del modelo.</p>
-
-### 4. Crear prompt con audio.
-
-Antes de realizar la creación de un prompt con audio, es necesario realizar una configuración de seguridad en el navegador.
-
-Recordemos que para cargar la interfaz web, se escribe la siguiente dirección.
-
-`http://192.168.241.18:3000/`
-
-La URL anterior carece de seguridad, y por consecuencia el navegador lo considera inseguro y no permite que el botón iniciar la grabación del audio se active en la interfaz web.
-
-Por lo tanto a continuación se muestra la configuración a realizar para que el navegador considere la URL segura y en consecuencia permita activar el botón de grabar.
-
-`chrome://flags/#unsafely-treat-insecure-origin-as-secure`
-
-La configuración antes mencionada, hace referencia a una opción experimental en las flags de Chrome que permite tratar ciertos orígenes inseguros como si fueran seguros. Esta opción puede ser útil en entornos de desarrollo, pero no se recomienda activarla en situaciones normales debido a los riesgos de seguridad.
-
-#### Configuración del navegador chrome.
-
-Para realizar la configuración es necesario copiar y pegar en el url del navegador la siguiente instrucción, ver figura 11:
-`chrome://flags/#unsafely-treat-insecure-origin-as-secure`
-
-Posteriormente elegir la opción enabled del botón, que se encuentra en lado derecho de la pantalla. Posteriormente hay que dar click en el mensaje que dice **_reset all_**.
-
-![Seguridad](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/13.seguridad.png)
-
-<p align="center">Figura 11. Tratar sitio inseguro como seguro</p>
-
-### 1. Crear prompt con audio.
-
-Si todo salió bien deberá mostrarse un micrófono activado del lado izquierdo de la URL, ver figura 11.
-
-![Micrófono Activado](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/microfonoActivado.png)
-
-<p align>Figura 11. Micrófono activado </p>
-
-#### El siguiente paso consiste en crear el prompt de audio.
-
-Para iniciar la grabación del audio se debe dar click sobre el botón de **_iniciar grabación_** y para finalizar la grabación se da click sobre botón **_Detener grabación_**.
-
-![Resultado Configuración Audio](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/14.resultadoConfiguracinAudio.png)
-
-<p align="center">Figura 12.Grabar audio</p>
-
-En la figura 13, se observa que después de grabar el audio, se debe presionar el botón de play para que transcriba a texto el audio grabado, tal como se muestra en la figura.
-
-En este caso el audio grabado es "explica que es un LLM". Posteriormente en envía la petición al modelo de lenguaje.
-![Comando Voz](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/15.comandoVoz.png)
-
-<p align="center">Figura 13. Transcribir audio a texto</p>
-
-
-
-FINE-TUNNING
-=============
-
 # Introducción a Q LoRA y Fine-tuning para Modelos de Lenguaje de Gran Tamaño (LLMs)
 
 **Q LoRA (Quantized Low-Rank Adaptation)** es una técnica innovadora que permite adaptar y optimizar modelos de lenguaje de gran tamaño (LLMs) de manera eficiente. Combina los enfoques de cuantización y adaptación de baja dimensionalidad, logrando una notable reducción en los recursos computacionales necesarios para el ajuste fino (fine-tuning). Esto es crucial en un contexto donde los LLMs demandan gran cantidad de memoria y poder de procesamiento.
@@ -487,7 +339,154 @@ Una vez realizado el código anterior, la imagén que se muestra a continuación
 
 ![](https://drive.google.com/file/d/14INN3qOOx2THcX9S0Egwmolc4EsjgL6S/view?usp=drive_link)
 
-# Conclusión sobre el uso de QLoRA para LLM
+
+## Pasos para la ejecución del entorno.
+
+En la realización del presente proyecto se utilizó el sistema operativo ubuntu 20.04.6 LTS. El servidor con el sistema operativo se encuentra en el laboratorio de postgrado. A continuación se muestran los pasos para la ejecución del entorno.
+
+### 1. Conexión mediante ssh al servidor con sistema operativo ubuntu.
+
+En la figura 1 se puede observar los comandos utilizados para iniciar sesión en el sistema operativo.
+
+![Conexión SSH](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/1.%20conexionSSH.png)
+
+<p align="center">Figura 1. Iniciar sesión mediante ssh.</p>
+
+### 2. Iniciar ejecución del servidor ollama.
+
+En la figura 2 se observa el comando para iniciar el servidor ollama.
+
+![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/2.ejecucionOllama.png)
+
+<p align="center">Figura 2. Ejecutar servidor ollama.</p>
+
+### 3. Mostrar la lista de entornos virtuales disponibles.
+
+En la figura 3 se muestra el comando para mostrar los entornos virtuales disponibles.
+
+![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/3.%20ListaEntornosEjecutables.png)
+
+<p align="center">Figura 3. Entorno disponibles</p>
+
+### 4. Ejecución del entorno virtual.
+
+En la figura 4, se observa el comando utilizado para ejecutar el entorno virtual llamado **_whisper_env_**.
+
+![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/4.%20ActivacionEntorno.png)
+
+<p align="center">Figura 4. Ejecucion del entorno virtual</p>
+
+### 5. Ejecución del servidor escrito en nodejs.
+
+En la figura 5, se realizan las siguiente acciones.
+
+- Ingresar a la carpeta Chatbot_3.2-Llama-vision.
+- Ejecutar el servidor escrito en nodejs.
+
+![Texto alternativo](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/6.EjecucionServidorNode.png)
+
+<p align="center">Figura 5. Ejecucion del servidor servidor escrito en nodejs.
+
+Después de realizar los pasos anteriores, el siguiente paso es mostrar la interfaz web desde un navegador para comunicarse con el modelo de lenguaje multimodal llama 3.2.
+
+## Pruebas realizadas.
+
+A continuación se muestran los pasos a seguir para ejecutar el chatbot multimodal.
+
+### 1. Cargar la interfaz web en un navegador.
+
+Cabe comentar que para la realización del proyecto se utilizó un servidor del laboratorio de postgrado, por dicha razón se escribe en el navegador la dirección ip del servidor.
+
+`http://192.168.241.18:3000/`
+
+Nota: En el código del servidor escrito en nodejs, se indica que va a estar escuchando las peticiones web en el puerto 3000.
+
+En la figura 6, se observa la interfaz del chatbot multimodal corriendo en el servidor del laboratorio de postgrado.
+
+![Interfaz Web](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/7.%20InterfazWeb.png)
+
+<p align="center">Figura 6. Interfaz web del chatbot multimodal</p>
+
+### 2. Cargar imagen.
+
+En la figura 7 se muestra el proceso para cargar una imagen. Dicha imagen será enviada al llama3.2.
+![Selección de Imagen](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/8.seleccionImagen.png)
+
+<p align="center">Figura 7. Cargar imagen</p>
+
+En la figura 8 se muestra el resultado de cargar la imagen.
+![Buscar Imagen](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/9.BuscarImagen.png)
+
+<p align="center">Figura 8. Imagen cargada</p>
+
+### 3. Crear prompt con texto e imagen.
+
+En la figura 9 se muestra de qué manera se puede crear un prompt con texto e imagen. En este caso el prompt consiste en pedirle a llama3.2 que describa el contenido de la imagen.
+
+![Prompt de Texto 1](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/10.PronptTexto1.png)
+
+<p align="center">Figura 9. Preparar prompt con texto e imagen</p>
+
+En la figura 10 se observa la respuesta del modelo del lenguaje. Cabe comentar que el prompt consistió en enviar texto e imagen. Posteriormente el modelo contesta solamente texto.
+
+![Descripción Prompt 1 - Parte 2](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/12.descripcionProm1_p2.png)
+
+<p align="center">Figura 10. Respuesta del modelo.</p>
+
+### 4. Crear prompt con audio.
+
+Antes de realizar la creación de un prompt con audio, es necesario realizar una configuración de seguridad en el navegador.
+
+Recordemos que para cargar la interfaz web, se escribe la siguiente dirección.
+
+`http://192.168.241.18:3000/`
+
+La URL anterior carece de seguridad, y por consecuencia el navegador lo considera inseguro y no permite que el botón iniciar la grabación del audio se active en la interfaz web.
+
+Por lo tanto a continuación se muestra la configuración a realizar para que el navegador considere la URL segura y en consecuencia permita activar el botón de grabar.
+
+`chrome://flags/#unsafely-treat-insecure-origin-as-secure`
+
+La configuración antes mencionada, hace referencia a una opción experimental en las flags de Chrome que permite tratar ciertos orígenes inseguros como si fueran seguros. Esta opción puede ser útil en entornos de desarrollo, pero no se recomienda activarla en situaciones normales debido a los riesgos de seguridad.
+
+#### Configuración del navegador chrome.
+
+Para realizar la configuración es necesario copiar y pegar en el url del navegador la siguiente instrucción, ver figura 11:
+`chrome://flags/#unsafely-treat-insecure-origin-as-secure`
+
+Posteriormente elegir la opción enabled del botón, que se encuentra en lado derecho de la pantalla. Posteriormente hay que dar click en el mensaje que dice **_reset all_**.
+
+![Seguridad](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/13.seguridad.png)
+
+<p align="center">Figura 11. Tratar sitio inseguro como seguro</p>
+
+### 1. Crear prompt con audio.
+
+Si todo salió bien deberá mostrarse un micrófono activado del lado izquierdo de la URL, ver figura 11.
+
+![Micrófono Activado](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/microfonoActivado.png)
+
+<p align>Figura 11. Micrófono activado </p>
+
+#### El siguiente paso consiste en crear el prompt de audio.
+
+Para iniciar la grabación del audio se debe dar click sobre el botón de **_iniciar grabación_** y para finalizar la grabación se da click sobre botón **_Detener grabación_**.
+
+![Resultado Configuración Audio](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/14.resultadoConfiguracinAudio.png)
+
+<p align="center">Figura 12.Grabar audio</p>
+
+En la figura 13, se observa que después de grabar el audio, se debe presionar el botón de play para que transcriba a texto el audio grabado, tal como se muestra en la figura.
+
+En este caso el audio grabado es "explica que es un LLM". Posteriormente en envía la petición al modelo de lenguaje.
+![Comando Voz](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/15.comandoVoz.png)
+
+<p align="center">Figura 13. Transcribir audio a texto</p>
+
+
+# Conclusiónes 
+
+## Sobre el uso de QLoRA para LLM
 
 QLoRA es una técnica revolucionaria que permite ajustar eficientemente modelos de lenguaje grandes (LLM) utilizando menos recursos computacionales y optimizando el tiempo de entrenamiento. Su enfoque combina estrategias como la cuantización a 4 bits y el ajuste fino eficiente de parámetros (LoRA), lo que la convierte en una herramienta ideal para trabajar con modelos de gran tamaño, incluso en hardware limitado.
 
