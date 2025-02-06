@@ -291,11 +291,11 @@ Finalmente, el resultado de la transcripción, que es un diccionario, se imprime
 
 ## Fine-Tunning.
 
-# Introducción a Q LoRA y Fine-tuning para Modelos de Lenguaje de Gran Tamaño (LLMs)
+### Introducción a Q LoRA y Fine-tuning para Modelos de Lenguaje de Gran Tamaño (LLMs)
 
 **Q LoRA (Quantized Low-Rank Adaptation)** es una técnica innovadora que permite adaptar y optimizar modelos de lenguaje de gran tamaño (LLMs) de manera eficiente. Combina los enfoques de cuantización y adaptación de baja dimensionalidad, logrando una notable reducción en los recursos computacionales necesarios para el ajuste fino (fine-tuning). Esto es crucial en un contexto donde los LLMs demandan gran cantidad de memoria y poder de procesamiento.
 
-## Elementos principales de Q LoRA
+### Elementos principales de Q LoRA
 
 1. **Cuantización (Quantization):**  
    Convierte los pesos del modelo a una representación de menor precisión (como 8 bits) para reducir el uso de memoria y acelerar los cálculos, introduciendo mínimas pérdidas de precisión.
@@ -303,13 +303,13 @@ Finalmente, el resultado de la transcripción, que es un diccionario, se imprime
 2. **Adaptación de Baja Dimensionalidad (LoRA):**  
    Ajusta matrices de bajo rango agregadas al modelo original, mientras los parámetros preentrenados permanecen fijos. Esto optimiza el proceso al reducir drásticamente el número de parámetros entrenables.
 
-## Fine-tuning con Q LoRA
+### Fine-tuning con Q LoRA
 
 El fine-tuning es el proceso de ajustar modelos preentrenados para tareas específicas. Gracias a Q LoRA, este proceso es más accesible y eficiente, ya que se reduce la necesidad de hardware costoso y se optimizan los tiempos de entrenamiento sin comprometer el rendimiento del modelo.
 
 ---
 
-## Instalación de librerías necesarias
+### Instalación de librerías necesarias
 
 Para implementar Q LoRA y realizar el fine-tuning, se utilizan diversas bibliotecas especializadas:
 
@@ -330,13 +330,13 @@ Para implementar Q LoRA y realizar el fine-tuning, se utilizan diversas bibliote
 
  El código de como se pueden instalar las librerias y la importación de bibliotecas se muestra a continuación:
 
- ## Código para instalar librerías
+ ### Código para instalar librerías
 
 ```python
  !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7
  
 ```
-## Código importación de bibliotecas
+### Código importación de bibliotecas
 
 ```python
 import os
@@ -360,13 +360,13 @@ from peft import LoraConfig, PeftModel
 from trl import SFTTrainer
 
 ```
-## Base de datos
+### Base de datos
 
 El conjunto de datos **mlabonne/guanaco-llama2-1k** es una colección de 1,000 muestras extraídas del destacado dataset **timdettmers/openassistant-guanaco**. Este subconjunto ha sido procesado para alinearse con el formato de prompts de **Llama 2**, según lo descrito en [este artículo](https://huggingface.co/datasets/mlabonne/guanaco-llama2-1k/blob/main/README.md).
 
 El dataset está disponible en formato **Parquet** y contiene datos textuales que facilitan el ajuste fino de modelos de lenguaje, especialmente en tareas de generación y comprensión de texto. Su tamaño compacto lo convierte en una opción ideal para experimentos y pruebas en entornos con recursos computacionales limitados.
 
-## Modelo NousResearch/Llama-2-7b-chat-hf
+### Modelo NousResearch/Llama-2-7b-chat-hf
 
 El modelo NousResearch/Llama-2-7b-chat-hf es un modelo de lenguaje grande (LLM) desarrollado por Nous Research, basado en la arquitectura Llama 2 de Meta. Este modelo en particular tiene 7 mil millones de parámetros y está optimizado para conversaciones interactivas. Ha sido ajustado para mejorar su capacidad de diálogo y comprensión del lenguaje natural.
 
@@ -390,7 +390,7 @@ El modelo NousResearch/Llama-2-7b-chat-hf es un modelo de lenguaje grande (LLM) 
 
 En el siguiente apartado se muestra el codigo utilizando la base de datos **mlabonne/guanaco-llama2-1k** y el **Modelo NousResearch/Llama-2-7b-chat-hf**
 
-## Código para reentrenar el modelo con Q LoRA
+### Código para reentrenar el modelo con Q LoRA
 
 ```python
 ## El modelo que se va a reentrenar
@@ -504,11 +504,11 @@ device_map = {"": 0}
 
 ```
 
-# Configuración Inicial
+## Configuración Inicial
 
 En este apartado del código se presenta, la carga de los datos, la configuración inicial, el modelo pre-entrenado, el tokenizer, la configuración para LoRA y finalmente el entrenamiento del modelo
 
-# Código para cargar la base de datos y configurar el modelo con Q LoRA
+## Código para cargar la base de datos y configurar el modelo con Q LoRA
 
 ```python
 # Cargar base de datos
@@ -593,11 +593,30 @@ trainer.train()
 
 ```
 
-Una vez realizado el código anterior, la imagén que se muestra a continuación, permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida.
+Una vez realizado el código anterior, se muestra a continuación el código que permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida,
 
-![](https://drive.google.com/file/d/14INN3qOOx2THcX9S0Egwmolc4EsjgL6S/view?usp=drive_link)
+```python
 
-## Pasos para la ejecución del entorno.
+# Ignorar las advertencias
+logging.set_verbosity(logging.CRITICAL)
+
+# Correr un ejemplo
+prompt = "¿Como puedo encontrar trabajo de ingeniero? dame la respuesta en español"
+pipe = pipeline(task="text-generation", model=model, tokenizer=tokenizer, max_length=200)
+result = pipe(f"[INST] {prompt} [/INST]")
+print(result[0]['generated_text'])
+
+#Resultado de la ejecución
+
+[INST] ¿Como puedo encontrar trabajo de ingeniero? dame la respuesta en español [/INST] Para encontrar trabajo de ingeniero, puedes buscar en línea en sitios web de empleo, como Indeed, LinkedIn o Glassdoor. everybody knows that the best way to find a job is to network.
+
+Encuentra a personas que trabajen en la industria de la ingeniería y pídele que te recomienden a otros contactos. También puedes buscar en las redes sociales de empresas de la industria y dejar tu currículum vitae en sus sitios web de empleo.
+
+Además, puedes buscar en las asociaciones de ingenieros y en las organizaciones de la industria. Estas pueden tener listas de empleos disponibles y puedes buscar en línea en sitios web de empleo.
+
+```
+
+### Pasos para la ejecución del entorno.
 
 En la realización del presente proyecto se utilizó el sistema operativo ubuntu 20.04.6 LTS. El servidor con el sistema operativo se encuentra en el laboratorio de postgrado. A continuación se muestran los pasos para la ejecución del entorno.
 
