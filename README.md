@@ -1,4 +1,4 @@
-# Proyecto: Implementación de un Chatbot Multimodal con Modelos de Lenguaje Avanzados y Transcripción de Audio: Uso de Llama 3.2-Vision y Whispe
+# Proyecto: Implementación de un Chatbot Multimodal con Modelos de Lenguaje Avanzados y Transcripción de Audio: Uso de Llama 3.2-Vision y Whisper.
 
 ## Introducción.
 
@@ -701,3 +701,7 @@ QLoRA es una técnica revolucionaria que permite ajustar eficientemente modelos 
 
 - Aunque QLoRA es eficiente, el uso de hardware adecuado (como GPUs modernas) sigue siendo clave para aprovechar al máximo sus beneficios.
 - La implementación puede requerir ajustes técnicos específicos para ciertas arquitecturas de modelos o tipos de datos.
+
+## Conclusión
+
+El desarrollo de este chatbot multimodal demuestra la viabilidad de integrar múltiples modalidades de entrada (texto, imágenes y audio) en un solo sistema basado en modelos de lenguaje de gran tamaño. La implementación de QLoRA permitió realizar un ajuste fino eficiente, reduciendo costos computacionales sin afectar el rendimiento del modelo. Además, la combinación de Llama 3.2-Vision y Whisper proporcionó una solución robusta para el análisis de imágenes y la transcripción de audio en tiempo real. A pesar de las ventajas, el sistema depende del hardware disponible, lo que podría limitar su aplicabilidad en entornos con menos recursos. En general, este proyecto representa un avance significativo en la interacción hombre-máquina, ofreciendo un modelo más flexible y adaptativo para futuras aplicaciones de inteligencia artificial.
