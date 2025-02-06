@@ -229,3 +229,257 @@ En este caso el audio grabado es "explica que es un LLM". Posteriormente en env�
 ![Comando Voz](https://raw.githubusercontent.com/academicomfc/LLM_imagenes/main/15.comandoVoz.png)
 
 <p align="center">Figura 13. Transcribir audio a texto</p>
+
+
+
+FINE-TUNNING
+=============
+
+# Introducción a Q LoRA y Fine-tuning para Modelos de Lenguaje de Gran Tamaño (LLMs)
+
+**Q LoRA (Quantized Low-Rank Adaptation)** es una técnica innovadora que permite adaptar y optimizar modelos de lenguaje de gran tamaño (LLMs) de manera eficiente. Combina los enfoques de cuantización y adaptación de baja dimensionalidad, logrando una notable reducción en los recursos computacionales necesarios para el ajuste fino (fine-tuning). Esto es crucial en un contexto donde los LLMs demandan gran cantidad de memoria y poder de procesamiento.
+
+## Elementos principales de Q LoRA
+
+1. **Cuantización (Quantization):**  
+   Convierte los pesos del modelo a una representación de menor precisión (como 8 bits) para reducir el uso de memoria y acelerar los cálculos, introduciendo mínimas pérdidas de precisión.
+
+2. **Adaptación de Baja Dimensionalidad (LoRA):**  
+   Ajusta matrices de bajo rango agregadas al modelo original, mientras los parámetros preentrenados permanecen fijos. Esto optimiza el proceso al reducir drásticamente el número de parámetros entrenables.
+
+## Fine-tuning con Q LoRA
+
+El fine-tuning es el proceso de ajustar modelos preentrenados para tareas específicas. Gracias a Q LoRA, este proceso es más accesible y eficiente, ya que se reduce la necesidad de hardware costoso y se optimizan los tiempos de entrenamiento sin comprometer el rendimiento del modelo.
+
+---
+
+## Instalación de librerías necesarias
+
+Para implementar Q LoRA y realizar el fine-tuning, se utilizan diversas bibliotecas especializadas:
+
+1. **Accelerate:**  
+   Biblioteca de Hugging Face que simplifica el entrenamiento e inferencia de modelos en múltiples dispositivos (GPUs, TPUs).
+
+2. **PEFT:**  
+   Biblioteca para el ajuste fino eficiente de parámetros. Optimiza el ajuste fino en modelos grandes sin necesidad de actualizar todo el modelo.
+
+3. **Bitsandbytes:**  
+   Herramienta diseñada para operaciones de precisión reducida y eficiente, útil para ahorrar memoria en modelos de aprendizaje profundo.
+
+4. **Transformers:**  
+   Biblioteca de Hugging Face que permite trabajar con modelos basados en Transformers de manera flexible y eficiente.
+
+5. **TRL (Transformers Reinforcement Learning):**  
+   Extensión para integrar el aprendizaje por refuerzo en modelos de Transformers.
+
+En las imagenes de las figuras 14 y 15 se observa el código de como se pueden instalar las librerias y la importación de bibliotecas
+
+![](https://drive.google.com/file/d/12LpmnHgqxMLJTUEUC88wi_80-khfvDz-/view?usp=drive_link)
+
+![](https://drive.google.com/file/d/1hKt5qgsj_S5Dd9e59-BWPhSsQL85BEd1/view?usp=drive_link)
+
+
+
+## Código para reentrenar el modelo con Q LoRA
+
+```python
+## El modelo que se va a reentrenar
+model_name = "NousResearch/Llama-2-7b-chat-hf"
+
+## La nueva base de datos
+dataset_name = "mlabonne/guanaco-llama2-1k"
+
+## El nuevo modelo resultante
+new_model = "llama-2-7b-miniguanaco"
+
+################################################################################
+## QLoRA parámetros
+################################################################################
+
+## LoRA attention dimension
+lora_r = 64
+
+## Alpha parameter for LoRA scaling
+lora_alpha = 16
+
+## Dropout
+lora_dropout = 0.1
+
+################################################################################
+## bitsandbytes parámetros
+################################################################################
+
+## Activate 4-bit precision base model loading
+use_4bit = True
+
+## Compute dtype for 4-bit base models
+bnb_4bit_compute_dtype = "float16"
+
+## Quantization type (fp4 or nf4)
+bnb_4bit_quant_type = "nf4"
+
+## Activate nested quantization for 4-bit base models (double quantization)
+use_nested_quant = False
+
+################################################################################
+## TrainingArguments parámetros
+################################################################################
+
+## Output directory where the model predictions and checkpoints will be stored
+output_dir = "./results"
+
+## Number of training epochs
+num_train_epochs = 1
+
+## Enable fp16/bf16 training (set bf16 to True with an A100)
+fp16 = False
+bf16 = False
+
+## Batch size per GPU for training
+per_device_train_batch_size = 4
+
+## Batch size per GPU for evaluation
+per_device_eval_batch_size = 4
+
+## Number of update steps to accumulate the gradients for
+gradient_accumulation_steps = 1
+
+## Enable gradient checkpointing
+gradient_checkpointing = True
+
+## Maximum gradient normal (gradient clipping)
+max_grad_norm = 0.3
+
+## Tasa de aprendizaje con ADAMW
+learning_rate = 2e-4
+
+## Modificación de los pesos
+weight_decay = 0.001
+
+## Optimizador
+optim = "paged_adamw_32bit"
+
+## Tasa de aprendizaje
+lr_scheduler_type = "cosine"
+
+## Número de pasos máximos
+max_steps = -1
+
+## Ratio of steps for a linear warmup
+warmup_ratio = 0.03
+
+## Agrupar secuencias en lotes con la misma longitud
+## Ahorra memoria y acelera considerablemente el entrenamiento
+group_by_length = True
+
+## Guardar los pasos
+save_steps = 0
+
+## Pasos de registro
+logging_steps = 25
+
+################################################################################
+## SFT parámetros
+################################################################################
+
+## Tamaño de secuencia máxima
+max_seq_length = None
+
+packing = False
+
+## Cargar modelo en GPU
+device_map = {"": 0}
+
+#Configuración Inicial
+
+En este apartado del código se presenta, la carga de los datos, la configuración inicial, el modelo pre-entrenado, el tokenizer, la configuración para LoRA y finalmente el entrenamiento del modelo
+
+# Código para cargar la base de datos y configurar el modelo con Q LoRA
+
+```python
+# Cargar base de datos
+dataset = load_dataset(dataset_name, split="train")
+
+# Cargar tokenizer y modelo con configuración de QLoRA
+compute_dtype = getattr(torch, bnb_4bit_compute_dtype)
+
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=use_4bit,
+    bnb_4bit_quant_type=bnb_4bit_quant_type,
+    bnb_4bit_compute_dtype=compute_dtype,
+    bnb_4bit_use_double_quant=use_nested_quant,
+)
+
+# Trabajar con GPU con bfloat16
+if compute_dtype == torch.float16 and use_4bit:
+    major, _ = torch.cuda.get_device_capability()
+    if major >= 8:
+        print("=" * 80)
+        print("Your GPU supports bfloat16: accelerate training with bf16=True")
+        print("=" * 80)
+
+# Cargar modelo
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    quantization_config=bnb_config,
+    device_map=device_map
+)
+model.config.use_cache = False
+model.config.pretraining_tp = 1
+
+# LLaMA tokenizer
+tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = "right"
+
+# Configuración LoRA
+peft_config = LoraConfig(
+    lora_alpha=lora_alpha,
+    lora_dropout=lora_dropout,
+    r=lora_r,
+    bias="none",
+    task_type="CAUSAL_LM",
+)
+
+# Parámetros de entrenamiento
+training_arguments = TrainingArguments(
+    output_dir=output_dir,
+    num_train_epochs=num_train_epochs,
+    per_device_train_batch_size=per_device_train_batch_size,
+    gradient_accumulation_steps=gradient_accumulation_steps,
+    optim=optim,
+    save_steps=save_steps,
+    logging_steps=logging_steps,
+    learning_rate=learning_rate,
+    weight_decay=weight_decay,
+    fp16=fp16,
+    bf16=bf16,
+    max_grad_norm=max_grad_norm,
+    max_steps=max_steps,
+    warmup_ratio=warmup_ratio,
+    group_by_length=group_by_length,
+    lr_scheduler_type=lr_scheduler_type,
+    report_to="tensorboard"
+)
+
+# Parámetros del Fine Tuning
+trainer = SFTTrainer(
+    model=model,
+    train_dataset=dataset,
+    peft_config=peft_config,
+    dataset_text_field="text",
+    max_seq_length=max_seq_length,
+    tokenizer=tokenizer,
+    args=training_arguments,
+    packing=packing,
+)
+
+# Reentrenar modelo
+trainer.train()
+
+# Guardar modelo
+trainer.model.save_pretrained(new_model)
+
+Una vez realizado el código anterior, la imagén de la figura 15 que se muestra a continuación, permite ver un ejemplo de una pregunta que se realiza en el promp y su respuesta obtenida.
+
+![](https://drive.google.com/file/d/14INN3qOOx2THcX9S0Egwmolc4EsjgL6S/view?usp=drive_link)
