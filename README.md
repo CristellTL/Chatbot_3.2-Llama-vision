@@ -326,13 +326,69 @@ Para implementar Q LoRA y realizar el fine-tuning, se utilizan diversas bibliote
    Biblioteca de Hugging Face que permite trabajar con modelos basados en Transformers de manera flexible y eficiente.
 
 5. **TRL (Transformers Reinforcement Learning):**  
-   Extensión para integrar el aprendizaje por refuerzo en modelos de Transformers.
+   Extensión para integrar el aprendizaje por refuerzo en modelos de Transformers
 
-En las imagenes de las figuras 14 y 15 se observa el código de como se pueden instalar las librerias y la importación de bibliotecas
+ El código de como se pueden instalar las librerias y la importación de bibliotecas se muestra a continuación:
 
-![](https://drive.google.com/file/d/12LpmnHgqxMLJTUEUC88wi_80-khfvDz-/view?usp=drive_link)
+ ## Código para instalar librerías
 
-![](https://drive.google.com/file/d/1hKt5qgsj_S5Dd9e59-BWPhSsQL85BEd1/view?usp=drive_link)
+```python
+ !pip install -q accelerate==0.21.0 peft==0.4.0 bitsandbytes==0.40.2 transformers==4.31.0 trl==0.4.7
+ 
+```
+## Código importación de bibliotecas
+
+```python
+import os
+import torch
+from datasets import load_dataset
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    HfArgumentParser,
+    TrainingArguments,
+    pipeline,
+    logging,
+)
+
+#peft: Parameter-Efficient Fine-Tuning (PEFT) es una técnica que permite ajustar modelos de lenguaje grandes sin la necesidad de modificar todos sus parámetros.
+#LoraConfig: Esta clase se usa para definir la configuración de LoRA (Low-Rank Adaptation), una técnica de ajuste fino eficiente.
+from peft import LoraConfig, PeftModel
+
+#SFTTrainer: Es un entrenador especializado en el ajuste fino supervisado (Supervised Fine-Tuning) de modelos.
+from trl import SFTTrainer
+
+```
+## Base de datos
+
+El conjunto de datos **mlabonne/guanaco-llama2-1k** es una colección de 1,000 muestras extraídas del destacado dataset **timdettmers/openassistant-guanaco**. Este subconjunto ha sido procesado para alinearse con el formato de prompts de **Llama 2**, según lo descrito en [este artículo](https://huggingface.co/datasets/mlabonne/guanaco-llama2-1k/blob/main/README.md).
+
+El dataset está disponible en formato **Parquet** y contiene datos textuales que facilitan el ajuste fino de modelos de lenguaje, especialmente en tareas de generación y comprensión de texto. Su tamaño compacto lo convierte en una opción ideal para experimentos y pruebas en entornos con recursos computacionales limitados.
+
+## Modelo NousResearch/Llama-2-7b-chat-hf
+
+El modelo NousResearch/Llama-2-7b-chat-hf es un modelo de lenguaje grande (LLM) desarrollado por Nous Research, basado en la arquitectura Llama 2 de Meta. Este modelo en particular tiene 7 mil millones de parámetros y está optimizado para conversaciones interactivas. Ha sido ajustado para mejorar su capacidad de diálogo y comprensión del lenguaje natural.
+
+**Características principales:**
+
+*   **Tamaño:** 7 mil millones de parámetros, lo que lo hace relativamente pequeño en comparación con otros LLMs, pero aún capaz de generar texto de alta calidad.
+*   **Optimización para diálogo:** Ha sido entrenado específicamente para mantener conversaciones coherentes y relevantes, respondiendo a preguntas y siguiendo el hilo de la discusión.
+*   **Basado en Llama 2:** Se beneficia de la arquitectura y el entrenamiento de Llama 2, lo que le proporciona una base sólida en comprensión y generación del lenguaje natural.
+*   **Formato Hugging Face:** Está disponible en el formato Transformers de Hugging Face, lo que facilita su uso en proyectos de aprendizaje automático y procesamiento del lenguaje natural.
+
+**Posibles usos:**
+
+*   **Asistentes virtuales:** Puede ser utilizado para crear chatbots y asistentes virtuales capaces de interactuar de manera natural con los usuarios.
+*   **Generación de contenido:** Puede generar texto creativo, como poemas, artículos o guiones, así como responder preguntas y proporcionar información.
+*   **Investigación en PLN:** Sirve como una herramienta valiosa para investigadores en el campo del procesamiento del lenguaje natural, permitiéndoles estudiar y mejorar las capacidades de los LLMs.
+
+**Consideraciones:**
+
+*   **Sesgos:** Como todos los LLMs, puede contener sesgos presentes en los datos con los que fue entrenado. Es importante ser consciente de esto y tomar precauciones para mitigar los posibles sesgos en sus respuestas.
+*   **Uso responsable:** Se recomienda utilizar este modelo de manera ética y responsable, evitando su uso para generar contenido dañino, engañoso o discriminatorio.
+
+En el siguiente apartado se muestra el codigo utilizando la base de datos **mlabonne/guanaco-llama2-1k** y el **Modelo NousResearch/Llama-2-7b-chat-hf**
 
 ## Código para reentrenar el modelo con Q LoRA
 
