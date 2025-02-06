@@ -289,7 +289,7 @@ print(result["text"])
 
 Finalmente, el resultado de la transcripción, que es un diccionario, se imprime en la consola. El campo "text" contiene el texto transcrito que Whisper ha generado a partir del audio.
 
-## Fine-Tunning.
+## Fine-Tuning.
 
 ### Introducción a Q LoRA y Fine-tuning para Modelos de Lenguaje de Gran Tamaño (LLMs)
 
