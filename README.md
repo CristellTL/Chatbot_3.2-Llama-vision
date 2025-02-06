@@ -760,22 +760,6 @@ En este caso el audio grabado es "explica que es un LLM". Posteriormente en env�
 <p align="center">Figura 13. Transcribir audio a texto</p>
 
 
-## Sobre el uso de QLoRA para LLM
-
-QLoRA es una técnica revolucionaria que permite ajustar eficientemente modelos de lenguaje grandes (LLM) utilizando menos recursos computacionales y optimizando el tiempo de entrenamiento. Su enfoque combina estrategias como la cuantización a 4 bits y el ajuste fino eficiente de parámetros (LoRA), lo que la convierte en una herramienta ideal para trabajar con modelos de gran tamaño, incluso en hardware limitado.
-
-## Beneficios clave
-
-- **Reducción de costos computacionales**: Al utilizar cuantización a 4 bits, QLoRA minimiza el uso de memoria sin sacrificar la precisión del modelo.
-- **Ajuste fino eficiente**: LoRA permite modificar únicamente un subconjunto de parámetros del modelo, lo que acelera el proceso de entrenamiento y reduce la necesidad de grandes recursos.
-- **Escalabilidad**: Es posible aplicar QLoRA a modelos desde millones hasta miles de millones de parámetros, haciendo viable el uso de LLM en más aplicaciones.
-- **Flexibilidad**: Compatible con múltiples frameworks y adaptable a diversas tareas, desde generación de texto hasta comprensión del lenguaje.
-
-## Limitaciones
-
-- Aunque QLoRA es eficiente, el uso de hardware adecuado (como GPUs modernas) sigue siendo clave para aprovechar al máximo sus beneficios.
-- La implementación puede requerir ajustes técnicos específicos para ciertas arquitecturas de modelos o tipos de datos.
-
 ## Conclusión
 
 El desarrollo de este chatbot multimodal demuestra la viabilidad de integrar múltiples modalidades de entrada (texto, imágenes y audio) en un solo sistema basado en modelos de lenguaje de gran tamaño. La implementación de QLoRA permitió realizar un ajuste fino eficiente, reduciendo costos computacionales sin afectar el rendimiento del modelo. Además, la combinación de Llama 3.2-Vision y Whisper proporcionó una solución robusta para el análisis de imágenes y la transcripción de audio en tiempo real. A pesar de las ventajas, el sistema depende del hardware disponible, lo que podría limitar su aplicabilidad en entornos con menos recursos. En general, este proyecto representa un avance significativo en la interacción hombre-máquina, ofreciendo un modelo más flexible y adaptativo para futuras aplicaciones de inteligencia artificial.
